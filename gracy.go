@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const defaultTimeout = 10 * time.Second
+
 type CallbackFunc func() error
 
 var gracy *Gracy
@@ -38,10 +40,14 @@ func Wait() error {
 	case <-gracy.stop:
 	}
 
+	return GracefulShutdown()
+}
+
+func GracefulShutdown() error {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
 	done := make(chan struct{})
