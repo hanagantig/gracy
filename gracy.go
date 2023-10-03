@@ -12,6 +12,8 @@ import (
 
 const defaultTimeout = 10 * time.Second
 
+var defaultSignals = []os.Signal{syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT}
+
 type CallbackFunc func() error
 
 var gracy *Gracy
@@ -24,7 +26,7 @@ type Gracy struct {
 
 func init() {
 	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(stop, defaultSignals...)
 
 	gracy = &Gracy{stop: stop}
 }
@@ -45,7 +47,7 @@ func Wait() error {
 
 func GracefulShutdown() error {
 	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(stop, defaultSignals...)
 
 	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
