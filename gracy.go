@@ -12,7 +12,7 @@ import (
 
 const defaultTimeout = 10 * time.Second
 
-var defaultSignals = []os.Signal{syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT}
+var defaultSignals = []os.Signal{syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP, syscall.SIGKILL}
 
 type CallbackFunc func() error
 
